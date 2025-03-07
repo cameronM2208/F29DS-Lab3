@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    networks:
+      - my_network
+
+  db:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Pokemon11
+      MYSQL_DATABASE: spotify_database
+      MYSQL_USER: cmurray
+      MYSQL_PASSWORD: Pokemon11
+    networks:
+      - my_network
+
+  api:
+    build: .
+    volumes:
+      - ./api:/usr/src/app
+    ports:
+      - "5000:5000"
+    networks:
+      - my_network
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: cmurray
+      DB_PASSWORD: Pokemon11
+      DB_NAME: spotify_database
+
+networks:
+  my_network:
+    driver: bridge
+
+volumes:
+  db_data:
